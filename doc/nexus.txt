@@ -1,0 +1,54 @@
+*nexus.txt* tmux and vim, sitting in a tree...
+
+An opinionated plugin for getting vim and tmux to play together.
+
+INTRODUCTION                                            *nexus*
+
+This plugin represents its author's view on workflow. It is a collection of
+various small things that bring together tmux and vim for a smooth coding
+experience.
+
+When I work, I always have a GUI Vim (MacVim, to be precise) and a terminal
+open. I want to achieve a workflow, where the editor and the shell know about
+each other and integrate smoothly.
+
+                                                        *nexus-current-session*
+Nexus expects a running tmux session named like the current directory, that
+has a window named "nexus". For example, if you are working on a project in:
+>
+    /work/projects/killer-app
+<
+Nexus will expect to have a session called "killer-app" with a window named
+"nexus". It interfaces the terminal by sending commands like:
+>
+    tmux send-keys -t killer-app:nexus
+
+FUNCTIONALITY                                           *nexus-functionality*
+
+1. Run current file                                     |nexus-run|
+2. Start a tmux shell                                   |nexus-start-tmux|
+
+=============================================================================
+1. Run current file                                     *nexus-run*
+
+Executes the current file in the terminal. Currently supports only RSpec and
+Cucumber.
+
+<Plug>NexusRunFile        Execute the whole file.
+                          In RSpec, it runs the whole spec. In Cucumber, it
+                          runs the complete feature.
+
+<Plug>NexusRunLine        Execute the context of the current line.
+                          In RSpec, it runs the example the cursor is
+                          currently in (using the --line option).
+                          In Cucumber, it runs the scenario the cursor is
+                          currently in.
+>
+=============================================================================
+2. Start a tmux shell                                   *nexus-start-tmux*
+
+:Nexus                    Starts the tmux session nexus talks to.
+                          If the session is already running, it prints a
+                          warning. See also |nexus-current-session|
+
+ vim:tw=78:ft=help:norl:
