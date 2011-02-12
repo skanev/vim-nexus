@@ -57,7 +57,7 @@ function! s:createSession()
 
   call system("tmux new-session -d -s " . session)
   call system("tmux rename-window -t " . session . ":0 nexus")
-  echohl MoreMsg | echo "tmux session created. Run 'tmux -t " . session . "' to join it." | echohl None
+  echohl MoreMsg | echo "tmux session created. Run 'tmux attach -t " . session . "' to join it." | echohl None
 endfunction
 
 command Nexus :call <SID>createSession()
