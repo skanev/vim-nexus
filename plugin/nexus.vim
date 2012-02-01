@@ -12,8 +12,8 @@ let s:modes.cucumber.line = '"command cucumber " . expand("%") . ":" . line(".")
 
 let s:modes.rspec = {}
 let s:modes.rspec.matcher = '_spec\.rb$'
-let s:modes.rspec.file = '"command rspec --format nested " . expand("%") . " --drb"'
-let s:modes.rspec.line = '"command rspec --format nested " . expand("%") . " --line " . line(".") . " --drb"'
+let s:modes.rspec.file = '"/Users/aquarius/.vim/bundle/vim-nexus/bin/nexus_rspec " . expand("%") . " --drb"'
+let s:modes.rspec.line = '"/Users/aquarius/.vim/bundle/vim-nexus/bin/nexus_rspec " . expand("%") . " --line " . line(".") . " --drb"'
 
 " Executing a target {{{1
 function! s:currentSessionName()
@@ -60,7 +60,14 @@ function! s:createSession()
   echohl MoreMsg | echo "tmux session created. Run 'tmux attach -t " . session . "' to join it." | echohl None
 endfunction
 
-command Nexus :call <SID>createSession()
+function! NexusLoadQuickfix(file)
+  let oldformat = &errorformat
+  set errorformat=%f:%l:%m
+  exec "cgetfile ".a:file
+  let &errorformat = oldformat
+endfunction
+
+command! Nexus :call <SID>createSession()
 
 " Mappings {{{1
 map <expr> <Plug>NexusRunFile <SID>run('file')

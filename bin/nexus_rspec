@@ -1,0 +1,4 @@
+#!/bin/sh
+
+FORMATTER="`dirname "$0"`/nexus_formatter.rb"
+command rspec --format nested --require "$FORMATTER" --format NexusFormatter --drb $*
