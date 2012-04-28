@@ -37,12 +37,17 @@ function! s:run(target)
     endif
   endfor
 
-  if !has_key(commands, a:target)
+  if has_key(commands, a:target)
+    let command = eval(commands[a:target])
+    let g:nexus_last_command = command
+    call s:tmux(command)
+  elseif exists("g:nexus_last_command")
+    call s:tmux(g:nexus_last_command)
+  else
     echohl ErrorMsg | echo "Nexus: undefined command " . a:target | echohl None
     return
   end
 
-  call s:tmux(eval(commands[a:target]))
 endfunction
 
 " Creating a session {{{1
@@ -60,7 +65,7 @@ function! s:createSession()
   echohl MoreMsg | echo "tmux session created. Run 'tmux attach -t " . session . "' to join it." | echohl None
 endfunction
 
-command Nexus :call <SID>createSession()
+command! Nexus :call <SID>createSession()
 
 " Mappings {{{1
 map <expr> <Plug>NexusRunFile <SID>run('file')
