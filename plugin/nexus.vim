@@ -123,7 +123,7 @@ function! s:selectedText()
 endfunction
 
 function! s:currentBufferContents()
-  return join(getbufline('%', 0, '$'), "\n")
+  return join(getline(0, '$'), "\n")
 endfunction
 
 " Commands {{{1
