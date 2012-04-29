@@ -127,10 +127,10 @@ function! s:currentBufferContents()
 endfunction
 
 " Commands {{{1
-command! Nexus :call <SID>createSession()
-command! -range NexusSendSelection :call <SID>sendSelection()
-command! NexusSendBuffer :call <SID>sendBuffer()
-command! NexusReadPane :call <SID>readPane()
+command! Nexus call s:createSession()
+command! -range NexusSendSelection call s:sendSelection()
+command! NexusSendBuffer call s:sendBuffer()
+command! NexusReadPane call s:readPane()
 
 " Mappings {{{1
 noremap <expr> <Plug>NexusRunFile <SID>run('file')
