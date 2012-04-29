@@ -94,6 +94,23 @@ function! s:sendBuffer()
   call s:sendKeys(s:currentBufferContents())
 endfunction
 
+" Reading text {{{1
+function! s:readPane()
+  if !s:sessionRunning()
+    echohl ErrorMsg | echo "Cannot send to tmux - session not running" | echohl None
+    return
+  endif
+
+  let session = s:currentSessionName()
+  call system('tmux capture-pane -t ' . session)
+
+  let contents = system('tmux save-buffer - | cat')
+  let contents = substitute(contents, '\v[\n ]+$', '', 'g')
+  let lines = split(contents, "\n")
+
+  call append(line('.'), lines)
+endfunction
+
 " Utility functions {{{1
 function! s:selectedText()
   try
@@ -113,6 +130,7 @@ endfunction
 command! Nexus :call <SID>createSession()
 command! -range NexusSendSelection :call <SID>sendSelection()
 command! NexusSendBuffer :call <SID>sendBuffer()
+command! NexusReadPane :call <SID>readPane()
 
 " Mappings {{{1
 noremap <expr> <Plug>NexusRunFile <SID>run('file')
