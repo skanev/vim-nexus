@@ -21,6 +21,8 @@ function! s:currentSessionName()
 endfunction
 
 function! s:tmux(command)
+  if s:notRunning() | return s:errorNotRunning() | endif
+
   let session = s:currentSessionName()
   let escaped = shellescape(a:command)
   let tmuxCall = "tmux send-keys -t " . session . ":nexus C-l C-u " . escaped . " C-m"
@@ -50,10 +52,7 @@ function! s:run(target)
 endfunction
 
 function! s:sendKeys(text)
-  if !s:sessionRunning()
-    echohl ErrorMsg | echo "Cannot send to tmux - session not running" | echohl None
-    return
-  endif
+  if s:notRunning() | return s:errorNotRunning() | endif
 
   let session = s:currentSessionName()
   let lines = split(a:text, "\n")
@@ -68,6 +67,16 @@ endfunction
 function! s:sessionRunning()
   let existingSessions = split(system("tmux list-sessions | cut -f 1 -d :"))
   return index(existingSessions, s:currentSessionName()) >= 0
+endfunction
+
+function! s:notRunning()
+  return !s:sessionRunning()
+endfunction
+
+function! s:errorNotRunning()
+  if s:notRunning()
+    echohl WarningMsg | echo 'Cannot interact with tmux - session is not running' | echohl None
+  end
 endfunction
 
 " Session management {{{1
@@ -96,10 +105,7 @@ endfunction
 
 " Reading text {{{1
 function! s:readPane()
-  if !s:sessionRunning()
-    echohl ErrorMsg | echo "Cannot send to tmux - session not running" | echohl None
-    return
-  endif
+  if s:notRunning() | return s:errorNotRunning() | endif
 
   let session = s:currentSessionName()
   call system('tmux capture-pane -t ' . session)
