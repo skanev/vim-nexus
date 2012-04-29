@@ -3,6 +3,8 @@
 " URL:    http://github.com/skanev/vim-nexus
 
 " Modes and targets {{{1
+let s:runners_path = expand('<sfile>:h:h') . '/runners'
+
 let s:modes = {}
 
 let s:modes.cucumber = {}
@@ -12,8 +14,10 @@ let s:modes.cucumber.line = '"command cucumber " . expand("%") . ":" . line(".")
 
 let s:modes.rspec = {}
 let s:modes.rspec.matcher = '_spec\.rb$'
-let s:modes.rspec.file = '"command rspec --format nested " . expand("%") . " --drb"'
-let s:modes.rspec.line = '"command rspec --format nested " . expand("%") . " --line " . line(".") . " --drb"'
+let s:modes.rspec.file = '"command rspec --format nested " . expand("%") . " --drb --require " . s:runner("rspec")'
+let s:modes.rspec.line = '"command rspec --format nested " . expand("%") . " --line " . line(".") . " --drb --require " . s:runner("rspec")'
+let s:modes.rspec.errorformat = "%f:%l:%m"
+let s:modes.rspec.test_runner = 'rspec.rb'
 
 " Nexus utility functions {{{1
 function! s:currentSessionName()
@@ -77,6 +81,31 @@ function! s:errorNotRunning()
   if s:notRunning()
     echohl WarningMsg | echo 'Cannot interact with tmux - session is not running' | echohl None
   end
+endfunction
+
+function! s:runner(mode)
+  if !has_key(s:modes, a:mode)
+    echoerr "Undefined mode: " . a:mode | return
+  elseif !has_key(s:modes[a:mode], 'test_runner')
+    echoerr "The mode '" . a:mode . "' does not have a test runner" | return
+  else
+    let path = s:runners_path . '/' . s:modes[a:mode].test_runner
+    return fnamemodify(path, ':~:.')
+  endif
+endfunction
+
+" Test run feedback {{{1
+function! NexusQuickfix(mode, file)
+  let errorformat = s:modes[a:mode].errorformat
+  let old_errorformat = &errorformat
+
+  try
+    let &errorformat = errorformat
+    call setqflist([])
+    execute 'cgetfile ' . a:file
+  finally
+    let &errorformat = old_errorformat
+  endtry
 endfunction
 
 " Session management {{{1
@@ -144,4 +173,4 @@ noremap <expr> <Plug>NexusRunLine <SID>run('line')
 noremap <expr> <Plug>NexusSendBuffer <SID>sendBuffer()
 vnoremap <silent> <Plug>NexusSendSelection :NexusSendSelection<CR>gv
 
-" vim:set ft=vim foldmethod=marker ts=2 sts=2 sw=2 et
+" vim:set et ft=vim foldmethod=marker ts=2 sts=2 sw=2
