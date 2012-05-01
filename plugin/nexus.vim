@@ -105,20 +105,6 @@ function! s:runner(mode)
   endif
 endfunction
 
-" Test run feedback {{{1
-function! NexusQuickfix(mode, file)
-  let errorformat = s:modes[a:mode].errorformat
-  let old_errorformat = &errorformat
-
-  try
-    let &errorformat = errorformat
-    call setqflist([])
-    execute 'cgetfile ' . a:file
-  finally
-    let &errorformat = old_errorformat
-  endtry
-endfunction
-
 " Session management {{{1
 function! s:createSession()
   let session = s:currentSessionName()

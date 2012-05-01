@@ -23,6 +23,19 @@ function! nexus#finished()
   call s:updateStatusline()
 endfunction
 
+function! nexus#quickfix(mode, file)
+  let errorformat = s:modes[a:mode].errorformat
+  let old_errorformat = &errorformat
+
+  try
+    let &errorformat = errorformat
+    call setqflist([])
+    execute 'cgetfile ' . a:file
+  finally
+    let &errorformat = old_errorformat
+  endtry
+endfunction
+
 " Segments callbacks {{{1
 function! nexus#segmentSuccess()
   if s:runinfo.failed > 0

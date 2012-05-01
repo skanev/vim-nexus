@@ -35,7 +35,7 @@ class NexusFormatter < RSpec::Core::Formatters::BaseFormatter
 
     @file.close
 
-    vim "NexusQuickfix('rspec', '#{@file.path}')"
+    vim "nexus#quickfix('rspec', '#{@file.path}')"
   end
 
   private
