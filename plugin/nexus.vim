@@ -20,13 +20,13 @@ let s:modes = {}
 
 let s:modes.cucumber = {}
 let s:modes.cucumber.matcher = '\.feature$'
-let s:modes.cucumber.file = '"command cucumber " . expand("%") . " --drb"'
-let s:modes.cucumber.line = '"command cucumber " . expand("%") . ":" . line(".") . " --drb"'
+let s:modes.cucumber.run_test = '"command cucumber " . expand("%") . " --drb"'
+let s:modes.cucumber.run_test_line = '"command cucumber " . expand("%") . ":" . line(".") . " --drb"'
 
 let s:modes.rspec = {}
 let s:modes.rspec.matcher = '_spec\.rb$'
-let s:modes.rspec.file = '"command rspec --format nested " . expand("%") . " --drb --require " . s:runner("rspec")'
-let s:modes.rspec.line = '"command rspec --format nested " . expand("%") . " --line " . line(".") . " --drb --require " . s:runner("rspec")'
+let s:modes.rspec.run_test = '"command rspec --format nested " . expand("%") . " --drb --require " . s:runner("rspec")'
+let s:modes.rspec.run_test_line = '"command rspec --format nested " . expand("%") . " --line " . line(".") . " --drb --require " . s:runner("rspec")'
 let s:modes.rspec.errorformat = "%f:%l:%m"
 let s:modes.rspec.test_runner = 'rspec.rb'
 
@@ -56,12 +56,12 @@ function! s:run(target)
 
   if has_key(commands, a:target)
     let command = eval(commands[a:target])
-    let g:nexus_last_command = command
+    let g:nexusLastTest = command
     call s:tmux(command)
-  elseif exists("g:nexus_last_command")
-    call s:tmux(g:nexus_last_command)
+  elseif exists("g:nexusLastTest")
+    call s:tmux(g:nexusLastTest)
   else
-    echohl ErrorMsg | echo "Nexus: undefined command " . a:target | echohl None
+    echohl ErrorMsg | echo "Nexus: cannot run current file (" . a:target . ")"| echohl None
     return
   end
 endfunction
@@ -174,14 +174,13 @@ endfunction
 
 " Commands {{{1
 command! Nexus call s:createSession()
-command! -range NexusSendSelection call s:sendSelection()
 command! NexusSendBuffer call s:sendBuffer()
 command! NexusReadPane call s:readPane()
 
 " Mappings {{{1
-noremap <expr> <Plug>NexusRunFile <SID>run('file')
-noremap <expr> <Plug>NexusRunLine <SID>run('line')
+noremap <expr> <Plug>NexusRunTest <SID>run('run_test')
+noremap <expr> <Plug>NexusRunTestLine <SID>run('run_test_line')
 noremap <expr> <Plug>NexusSendBuffer <SID>sendBuffer()
-vnoremap <silent> <Plug>NexusSendSelection :NexusSendSelection<CR>gv
+xnoremap <Plug>NexusSendSelection <ESC>:call <SID>sendSelection()<CR>
 
 " vim:set et ft=vim foldmethod=marker ts=2 sts=2 sw=2
