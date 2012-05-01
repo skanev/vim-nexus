@@ -2,6 +2,17 @@
 " Author: Stefan Kanev
 " URL:    http://github.com/skanev/vim-nexus
 
+" Initialize g:nexusVim {{{1
+if !exists('g:nexusVim')
+  if has("gui_macvim")
+    let g:nexusVim = 'mvim'
+  elseif has("gui_running")
+    let g:nexusVim = 'gvim'
+  else
+    let g:nexusVim = 'vim'
+  end
+endif
+
 " Modes and targets {{{1
 let s:runners_path = expand('<sfile>:h:h') . '/runners'
 
@@ -118,8 +129,8 @@ function! s:createSession()
     return
   end
 
-  call system("tmux new-session -d -s " . session)
-  call system("tmux rename-window -t " . session . " nexus")
+  call system('NEXUS_VIM=' . g:nexusVim . ' tmux new-session -d -s ' . session)
+  call system('tmux rename-window -t ' . session . ' nexus')
   echohl MoreMsg | echo "tmux session created. Run 'tmux attach -t " . session . "' to join it." | echohl None
 endfunction
 

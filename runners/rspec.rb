@@ -45,7 +45,8 @@ class NexusFormatter < RSpec::Core::Formatters::BaseFormatter
   end
 
   def vim(command)
-    %x{mvim --remote-expr "#{command}"}
+    executable = ENV.fetch 'NEXUS_VIM', 'vim'
+    %x{#{executable} --remote-expr "#{command}"}
   end
 end
 
