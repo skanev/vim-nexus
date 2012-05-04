@@ -164,7 +164,7 @@ command! NexusSendBuffer call s:sendBuffer()
 command! NexusReadPane call s:readPane()
 
 " Mappings {{{1
-noremap <expr> <Plug>NexusRunTest <SID>run('run_test')
+noremap <expr> <Plug>NexusRunTestFile <SID>run('run_test')
 noremap <expr> <Plug>NexusRunTestLine <SID>run('run_test_line')
 noremap <expr> <Plug>NexusSendBuffer <SID>sendBuffer()
 xnoremap <Plug>NexusSendSelection <ESC>:call <SID>sendSelection()<CR>
