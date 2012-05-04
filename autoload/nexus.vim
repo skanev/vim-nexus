@@ -29,7 +29,6 @@ function! nexus#quickfix(mode, file)
 
   try
     let &errorformat = errorformat
-    call setqflist([])
     execute 'cgetfile ' . a:file
   finally
     let &errorformat = old_errorformat
