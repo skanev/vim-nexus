@@ -35,7 +35,7 @@ function! s:currentSessionName()
   return fnamemodify(getcwd(), ':t')
 endfunction
 
-function! s:tmux(command)
+function! NexusSendCommand(command)
   if s:notRunning() | return s:errorNotRunning() | endif
 
   let session = s:currentSessionName()
@@ -57,9 +57,9 @@ function! s:run(target)
   if has_key(commands, a:target)
     let command = eval(commands[a:target])
     let g:nexusLastTest = command
-    call s:tmux(command)
+    call NexusSendCommand(command)
   elseif exists("g:nexusLastTest")
-    call s:tmux(g:nexusLastTest)
+    call NexusSendCommand(g:nexusLastTest)
   else
     echohl ErrorMsg | echo "Nexus: cannot run current file (" . a:target . ")"| echohl None
     return
