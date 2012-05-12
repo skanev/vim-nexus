@@ -27,6 +27,7 @@ FUNCTIONALITY                                           *nexus-functionality*
 
 1. Run current file                                     |nexus-run|
 2. Start a tmux shell                                   |nexus-start-tmux|
+3. Send a command to tmux                               |nexus-send-command|
 
 =============================================================================
 1. Run current file                                     *nexus-run*
@@ -34,21 +35,31 @@ FUNCTIONALITY                                           *nexus-functionality*
 Executes the current file in the terminal. Currently supports only RSpec and
 Cucumber.
 
-<Plug>NexusRunFile        Execute the whole file.
-                          In RSpec, it runs the whole spec. In Cucumber, it
-                          runs the complete feature.
+<Plug>NexusRunFile             Execute the whole file.
+                               In RSpec, it runs the whole spec. In Cucumber, it
+                               runs the complete feature.
 
-<Plug>NexusRunLine        Execute the context of the current line.
-                          In RSpec, it runs the example the cursor is
-                          currently in (using the --line option).
-                          In Cucumber, it runs the scenario the cursor is
-                          currently in.
->
+<Plug>NexusRunLine             Execute the context of the current line.
+                               In RSpec, it runs the example the cursor is
+                               currently in (using the --line option).
+                               In Cucumber, it runs the scenario the cursor is
+                               currently in.
+
 =============================================================================
 2. Start a tmux shell                                   *nexus-start-tmux*
 
-:Nexus                    Starts the tmux session nexus talks to.
-                          If the session is already running, it prints a
-                          warning. See also |nexus-current-session|
+:Nexus                         Starts the tmux session nexus talks to.
+                               If the session is already running, it prints a
+                               warning. See also |nexus-current-session|
+
+=============================================================================
+3. Send a command to tmux                               *nexus-send-command*
+
+:call NexusSendCommand('ls')   This will send the passed command to tmux.
+                               It is a convinient way to use the session
+                               created by Nexus.
+                               For example if you are a Node.js developer
+                               you can run your tests by invoking the
+                               "npm test" command from your vim.
 
  vim:tw=78:ft=help:norl:
